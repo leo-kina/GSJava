@@ -1,0 +1,121 @@
+classDiagram
+    direction LR
+
+    class Usuaria {
+      -Long idUsuaria
+      -String apelido
+      -String telefone
+      -LocalDate dataCadastro
+      -boolean ativa
+    }
+
+    class ContatoConfianca {
+      -Long idContato
+      -Long idUsuaria
+      -Integer idBairro
+      -String nome
+      -String telefone
+      -boolean principal
+      -List~Disponibilidade~ disponibilidades
+    }
+
+    class Disponibilidade {
+      -Long idDisponibilidade
+      -Long idContato
+      -Integer diaSemana
+      -Integer horaInicio
+      -Integer horaFim
+      +boolean cobre(dia, hora)
+    }
+
+    class Alerta {
+      -Long idAlerta
+      -Long idUsuaria
+      -Integer idBairro
+      -Integer idPeriodo
+      -LocalDateTime dataHora
+      -String origemLocal
+      -List~AlertaContato~ contatosAvisados
+    }
+
+    class AlertaContato {
+      -Long idAlerta
+      -Long idContato
+      -Integer ordem
+      -Integer minutosEstimados
+      -boolean disponivel
+      -boolean avisado
+    }
+
+    class Bairro {
+      -Integer idBairro
+      -Integer idMunicipio
+      -String nomeBairro
+      -Integer indiceRisco
+    }
+
+    class PeriodoDia {
+      -Integer idPeriodo
+      -String nomePeriodo
+      -Integer horaInicio
+      -Integer horaFim
+    }
+
+    Usuaria "1" --> "0..6" ContatoConfianca : possui
+    ContatoConfianca "1" --> "1..*" Disponibilidade : define
+    ContatoConfianca "1" --> "1" Bairro : mora em
+    Usuaria "1" --> "0..*" Alerta : registra
+    Alerta "1" --> "1..*" AlertaContato : avisa
+    AlertaContato "*" --> "1" ContatoConfianca : refere-se a
+    Alerta "*" --> "1" Bairro : ocorre em
+    Alerta "*" --> "1" PeriodoDia : classificado em
+
+    class ContatoConfiancaDao {
+      <<interface>>
+      +listarPorUsuaria(idUsuaria) List~ContatoConfianca~
+      +buscarPorId(idContato) Optional~ContatoConfianca~
+      +inserir(contato) ContatoConfianca
+      +atualizar(contato) void
+      +remover(idContato) void
+    }
+
+    class ContatoConfiancaDaoImpl {
+      -ConnectionFactory conexao
+    }
+
+    class ContatoConfiancaBO {
+      -ContatoConfiancaDao contatoDao
+      -BairroBO bairroBO
+      -UsuariaBO usuariaBO
+      +cadastrar(idUsuaria, ContatoRequest) ContatoConfianca
+      +atualizar(idContato, ContatoRequest) ContatoConfianca
+      +remover(idContato) void
+    }
+
+    class ContatoController {
+      -ContatoConfiancaBO contatoBO
+      +buscar(id) ContatoResponse
+      +atualizar(id, ContatoRequest) ContatoResponse
+      +remover(id) void
+    }
+
+    class DaoFactory {
+      <<factory>>
+      +getContatoConfiancaDao() ContatoConfiancaDao
+    }
+
+    class ConnectionFactory {
+      <<singleton>>
+      -static ConnectionFactory instance
+      +static getInstance() ConnectionFactory
+      +getConnection() Connection
+    }
+
+    ContatoConfiancaDao <|.. ContatoConfiancaDaoImpl : implementa
+    ContatoConfiancaDaoImpl --> ConnectionFactory : usa
+    ContatoConfiancaBO --> ContatoConfiancaDao : usa
+    DaoFactory ..> ContatoConfiancaDaoImpl : cria
+    ContatoConfiancaBO ..> DaoFactory : usa
+    ContatoController --> ContatoConfiancaBO : usa
+    ContatoConfiancaDaoImpl ..> ContatoConfianca : persiste
+    ContatoConfiancaDaoImpl ..> Disponibilidade : persiste

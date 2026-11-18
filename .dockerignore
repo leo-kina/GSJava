@@ -1,0 +1,6 @@
+target/
+docs/
+*.md
+.idea/
+.vscode/
+src/main/resources/db.properties

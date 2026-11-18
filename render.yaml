@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: womanshield-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: WS_DB_URL
+        sync: false
+      - key: WS_DB_USER
+        sync: false
+      - key: WS_DB_PASSWORD
+        sync: false
