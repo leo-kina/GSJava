@@ -1,0 +1,12 @@
+# Copie este arquivo para "db.properties" (mesma pasta) e preencha com as
+# credenciais reais do Oracle da FIAP. O db.properties real fica fora do Git
+# (ver .gitignore) para nao vazar credenciais no repositorio.
+#
+# Padrao FIAP: host oracle.fiap.com.br, porta 1521, SID ORCL, usuario/senha = RM do aluno.
+db.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+db.user=RM000000
+db.password=000000
+
+# No Render (producao), em vez de editar este arquivo, configure as
+# variaveis de ambiente WS_DB_URL, WS_DB_USER e WS_DB_PASSWORD no dashboard
+# do servico: elas sobrescrevem estes valores (ver ConnectionFactory).
