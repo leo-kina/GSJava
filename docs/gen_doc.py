@@ -24,7 +24,7 @@ INTEGRANTES = [
 ]
 
 GITHUB_URL = "https://github.com/leo-kina/GSJava"
-DEPLOY_URL = "(A PREENCHER apos o deploy no Render)"
+DEPLOY_URL = "https://womanshield-api.onrender.com"
 
 ENDPOINTS = [
     ("GET", "/bairros", "Lista os bairros (id, nome, indice de risco)", "200"),
